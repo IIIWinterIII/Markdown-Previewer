@@ -1,0 +1,460 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="https://cdn-icons-png.flaticon.com/128/6819/6819307.png" />
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+  <title>FCC: Simple React Markdown Previewer</title>
+  <style>
+     * {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+}
+
+body {
+  background-color: #87b5b5;
+  /* display: flex; */
+  justify-content: center;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial, "Noto Sans", sans-serif, "Apple Color Emoji",
+    "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  color: #333;
+  padding: 0px 15px;
+}
+
+.container {
+  margin: 10px auto 0px;
+  display: flex;
+  flex-direction: column;
+  position: relative;
+  padding: 0;
+}
+
+
+.preview-textarea-box {
+  max-width: 40em;
+  width: 90%;
+  min-width: 27em;
+  height: 200px;
+  position: relative;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+div {
+  display: block;
+}
+
+#modules,
+#preview-bottom {
+  width: 100%;
+  height: 35px;
+  border: 1px solid #000000;
+  background-color: rgb(74, 162, 162);
+  box-shadow: 0px 1px 25px 0px rgba(0, 0, 0, 0.5);
+  padding-top: 5px;
+  font: 16px "Russo One";
+  color: #000000;
+}
+
+.fa-arrows-alt,
+.fa-compress-alt {
+  float: right;
+  margin-top: 12px;
+  margin-right: 11px;
+  font-size: 1.2em;
+}
+
+.fa-arrows-alt {
+  transform: rotate(45deg);
+}
+
+.fa-arrows-alt:hover {
+  cursor: pointer;
+  color: #4bd1af;
+}
+
+.fa-compress-alt:hover {
+  cursor: pointer;
+  color: #4bd1af;
+}
+
+.fa-free-code-camp {
+  font-size: 18px;
+  margin: 4px 3px 0px 12px;
+}
+
+textarea {
+  width: 100%;
+  height: 100%;
+  min-height: 100%;
+  resize: vertical;
+  box-sizing: border-box;
+  overflow: auto;
+  background-color: rgb(192, 216, 216);
+  border: 1px solid #000000;
+  border-top: none;
+  box-shadow: 0px 1px 15px 0px rgba(0, 0, 0, 0.5);
+  outline: none;
+  font: 14px monospace;
+  padding: 5px;
+}
+
+span {
+  font-family: system-ui;
+  font-weight: 700;
+}
+
+.general-binder {
+  min-width: 30em;
+  max-width: 60em;
+  width: 100%;
+  margin-top: 50px;
+  margin-left: auto;
+  margin-right: auto;
+  box-sizing: border-box;
+  position: absolute;
+  left: 0px;
+  right: 0px;
+  top: 200px
+}
+
+.previewer {
+  width: 100%;
+  min-height: 15em;
+  height: auto;
+  background-color: rgb(192, 216, 216);
+  border: 1px solid #000000;
+  border-top: none;
+  box-shadow: 0px 1px 15px 0px rgba(0, 0, 0, 0.5);
+  padding: 1px 15px;
+  color: black;
+  font-size: 1.1em;
+  margin-bottom: 15px;
+}
+
+img {
+  width: 40em;
+  display: block;
+  margin: 25px auto;
+  max-width: 90%;
+}
+
+h1 {
+  border-bottom: 2px solid black;
+  padding-bottom: 15px;
+}
+
+h2 {
+  border-bottom: 1px solid black;
+  padding-bottom: 15px;
+  margin: 0px;
+}
+
+code {
+  color: black;
+  font-weight: 700;
+  border-radius: 0px;
+  font-family: monospace;
+}
+
+pre {
+  font-family: "Courier New", monospace;
+  white-space: pre-wrap;
+  background-color: #f6f8fa;
+  padding: 10px;
+  border-radius: 4px;
+  border: 1px solid #ddd;
+  font-size: 0.9em;
+}
+
+.comment {
+  color: #6a737d;
+  font-family: monospace;
+}
+
+.keyword {
+  color: #0077aa;
+  font-weight: bold;
+}
+
+.symbol {
+  color: #9a7966;
+}
+
+.operator {
+  color: orange;
+}
+
+.string {
+  color: green;
+}
+
+.number {
+  color: darkred;
+}
+
+.before-bracket {
+  color: #ff0000 !important;
+}
+
+ul,
+h3,
+p,
+pre,
+ol,
+font {
+  margin: 16px 0px;
+}
+
+ul {
+  padding: 0px 0px 0px 40px;
+}
+
+ul > li {
+  line-height: 0.6;
+}
+
+table {
+  border-collapse: collapse;
+  width: 60%;
+}
+
+th,
+td {
+  border: 2px solid #000000;
+  text-align: left;
+  padding: 4px;
+}
+
+blockquote {
+  border-left: 3px solid #224b4b;
+  color: #224b4b;
+  margin-left: 20px;
+  padding-left: 10px;
+}
+
+blockquote > p {
+  display: block;
+  margin-top: auto;
+}
+
+a {
+  text-decoration: underline;
+}
+
+.expanded {
+  height: 47em;
+  max-width: 40em;
+  width: 100%;
+  min-width: 30em;
+}
+
+.expanded textarea {
+  margin-bottom: 10px;
+}
+
+.hidden {
+  display: none;
+}
+
+.expandedes {
+  height: 100%;
+}
+
+.expandedes.general-binder {
+  position: relative;
+  top: 0px;
+  margin-top: 33px;
+}
+
+.expandedes .previewer {
+  min-height: 43em;
+  height: auto;
+  margin-bottom: -15px;
+}
+
+</style>
+</head>
+<body>
+  <div id="root"></div>
+	 <!-- Загрузка библиотек React и ReactDOM -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react/17.0.2/umd/react.development.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/react-dom/17.0.2/umd/react-dom.development.js"></script>
+  <!-- Загрузка библиотеки Babel для компиляции JSX -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-standalone/6.26.0/babel.min.js"></script>
+  <!-- Загрузка библиотеки marked.js для обработки Markdown -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/marked/2.0.3/marked.min.js"></script>
+
+  <!-- Ваш скрипт React и JSX -->
+  <script type="text/jsx">
+    // Весь ваш код из раздела JavaScript
+		const { useState, useEffect, useRef } = React; 
+    function App() {
+  const [text, setText] = useState("");
+  const textareaRef = useRef(null);
+  const divRef = useRef(null);
+  
+
+  useEffect(() => {
+    const textarea = textareaRef.current;
+    const div = divRef.current;
+
+    const adjustDivPosition = () => {
+      const textareaBottom = textarea.offsetTop + textarea.offsetHeight;
+      const newDivPosition = textareaBottom - 30;
+      div.style.top = `${newDivPosition}px`;
+    };
+
+    adjustDivPosition();
+
+    const resizeObserver = new ResizeObserver(adjustDivPosition);
+    resizeObserver.observe(textarea);
+
+    return () => {
+      resizeObserver.unobserve(textarea);
+    };
+  }, [textareaRef]);
+
+  const handleChange = (event) => {
+    const inputValue = event.target.value;
+    setText(inputValue);
+  };
+
+  const highlightCode = (code) => {
+    const keywords = [
+      "function",
+      "if",
+      "else",
+      "for",
+      "while",
+      "return",
+      "const",
+      "let",
+      "var",
+    ]; // Список ключевых слов
+
+    // Регулярное выражение для поиска комментариев
+    const commentRegex = /\/\/.*|\/\*[\s\S]*?\*\/|[(){},'`]/g;
+    const preBracketRegex = /((?!&#39;)\d)|(&#39;)/g;
+    const beforeBracket = /\b(\w+)\s*(?=\()/g;
+
+    // Регулярное выражение для поиска ключевых слов
+    const keywordRegex = new RegExp("\\b(" + keywords.join("|") + ")\\b", "g");
+
+    // Замена найденных совпадений на соответствующие элементы с классами стилей
+    const highlightedCode = code.replace(
+      /<code>(.*?)<\/code>/gs,
+      (match, codeContent) => {
+        const styledCode = codeContent
+          .replace(preBracketRegex, (match, group1) =>
+            group1 ? `<span class="number">${match}</span>` : "'"
+          )
+          .replace(
+            commentRegex,
+            (match) => `<span class="comment">${match}</span>`
+          )
+          .replace(
+            keywordRegex,
+            (match) => `<span class="keyword">${match}</span>`
+          )
+          .replace(
+            beforeBracket,
+            (match) => `<span class="before-bracket">${match}</span>`
+          );
+
+        return `<code>${styledCode}</code>`;
+      }
+    );
+
+    return highlightedCode;
+  };
+
+  useEffect(() => {
+    const expandIconTop = document.querySelector("#pseudo-button-top");
+    const textareaBox = document.querySelector(".preview-textarea-box");
+    const secondDiv = document.querySelector(".general-binder");
+
+    const iconTop = document.getElementById("pseudo-button-top");
+    const iconBottom = document.getElementById("pseudo-button-bottom");
+
+    iconTop.addEventListener("click", () => {
+      if (iconTop.classList.contains("fa-arrows-alt")) {
+        iconTop.classList.remove("fa-arrows-alt");
+        iconTop.classList.add("fa-compress-alt");
+      } else if (iconTop.classList.contains("fa-compress-alt")) {
+        iconTop.classList.remove("fa-compress-alt");
+        iconTop.classList.add("fa-arrows-alt");
+      }
+    });
+
+    // Изменение иконок в соответствии от нажатия на неё
+    iconBottom.addEventListener("click", () => {
+      if (iconBottom.classList.contains("fa-arrows-alt")) {
+        iconBottom.classList.remove("fa-arrows-alt");
+        iconBottom.classList.add("fa-compress-alt");
+      } else if (iconBottom.classList.contains("fa-compress-alt")) {
+        iconBottom.classList.remove("fa-compress-alt");
+        iconBottom.classList.add("fa-arrows-alt");
+      }
+    });
+
+    expandIconTop.addEventListener("click", () => {
+      textareaBox.classList.toggle("expanded");
+      secondDiv.classList.toggle("hidden");
+    });
+
+    const expandIconBottom = document.querySelector("#pseudo-button-bottom");
+    const previewer = document.querySelector(".general-binder");
+    const secondTextarea = document.querySelector(".preview-textarea-box");
+
+    expandIconBottom.addEventListener("click", () => {
+      previewer.classList.toggle("expandedes");
+      secondTextarea.classList.toggle("hidden");
+    });
+  }, []);
+
+  return (
+    <div className="container">
+      <div className="preview-textarea-box">
+        <div id="modules">
+          <i className="fab fa-free-code-camp"></i>
+          <span className="modules">Editor</span>
+          <i id="pseudo-button-top" className="fas fa-arrows-alt fa-lg"></i>
+        </div>
+        <textarea
+          ref={textareaRef}
+          id="editor"
+          value={text}
+          onChange={handleChange}
+        ></textarea>
+      </div>
+      <div className="general-binder" ref={divRef}>
+        <div id="preview-bottom">
+          <i className="fab fa-free-code-camp"></i>
+          <span className="editor">Previewer</span>
+          <i id="pseudo-button-bottom" className="fas fa-arrows-alt fa-lg"></i>
+        </div>
+        <div id="preview" className="previewer"
+            dangerouslySetInnerHTML={{
+              __html: highlightCode(marked(text, { breaks: true })),
+            }}
+          >
+        </div>
+      </div>
+    </div>
+  );
+}
+
+   const rootElement = document.getElementById("root");
+ReactDOM.render(<App />, rootElement);
+  </script>
+</body>
+</html>
