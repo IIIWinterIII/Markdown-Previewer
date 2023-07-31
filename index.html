@@ -382,30 +382,6 @@ a {
     const textareaBox = document.querySelector(".preview-textarea-box");
     const secondDiv = document.querySelector(".general-binder");
 
-    const iconTop = document.getElementById("pseudo-button-top");
-    const iconBottom = document.getElementById("pseudo-button-bottom");
-
-    iconTop.addEventListener("click", () => {
-      if (iconTop.classList.contains("fa-arrows-alt")) {
-        iconTop.classList.remove("fa-arrows-alt");
-        iconTop.classList.add("fa-compress-alt");
-      } else if (iconTop.classList.contains("fa-compress-alt")) {
-        iconTop.classList.remove("fa-compress-alt");
-        iconTop.classList.add("fa-arrows-alt");
-      }
-    });
-
-    // Изменение иконок в соответствии от нажатия на неё
-    iconBottom.addEventListener("click", () => {
-      if (iconBottom.classList.contains("fa-arrows-alt")) {
-        iconBottom.classList.remove("fa-arrows-alt");
-        iconBottom.classList.add("fa-compress-alt");
-      } else if (iconBottom.classList.contains("fa-compress-alt")) {
-        iconBottom.classList.remove("fa-compress-alt");
-        iconBottom.classList.add("fa-arrows-alt");
-      }
-    });
-
     expandIconTop.addEventListener("click", () => {
       textareaBox.classList.toggle("expanded");
       secondDiv.classList.toggle("hidden");
@@ -427,7 +403,12 @@ a {
         <div id="modules">
           <i className="fab fa-free-code-camp"></i>
           <span className="modules">Editor</span>
-          <i id="pseudo-button-top" className="fas fa-arrows-alt fa-lg"></i>
+          <i id="pseudo-button-top" className={`fas ${
+              topWindowExpanded ? "fa-compress-alt" : "fa-arrows-alt"
+            } fa-lg`} 
+            onClick={() => {
+              setTopWindowExpanded(!topWindowExpanded);
+            }}></i>
         </div>
         <textarea
           ref={textareaRef}
@@ -440,7 +421,12 @@ a {
         <div id="preview-bottom">
           <i className="fab fa-free-code-camp"></i>
           <span className="editor">Previewer</span>
-          <i id="pseudo-button-bottom" className="fas fa-arrows-alt fa-lg"></i>
+          <i id="pseudo-button-bottom" className={`fas ${
+              bottomWindowExpanded ? "fa-compress-alt" : "fa-arrows-alt"
+            } fa-lg`}
+            onClick={() => {
+              setBottomWindowExpanded(!bottomWindowExpanded);
+            }}></i>
         </div>
         <div id="preview" className="previewer"
             dangerouslySetInnerHTML={{
